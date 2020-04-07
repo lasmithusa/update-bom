@@ -17,13 +17,13 @@ def get_support_columns(master_bom_df, new_bom_df):
 def get_deleted_nodes(master_bom_df, new_bom_df, node_id='Node ID'):
     """Check master DF for nodes NOT in the new DF (nodes deleted in the new BOM)"""
 
-    return master_bom_df[get_deleted_idx(master_bom_df, new_bom_df, node_id=node_id)].reset_index()[node_id].to_list()
+    return list(master_bom_df[get_deleted_idx(master_bom_df, new_bom_df, node_id=node_id)].reset_index()[node_id])
 
 
 def get_added_nodes(master_bom_df, new_bom_df, node_id='Node ID'):
     """Check new BOM DF for nodes NOT in the master DF (nodes added to the new BOM)"""
 
-    return new_bom_df[get_added_idx(master_bom_df, new_bom_df, node_id=node_id)].reset_index()[node_id].to_list()
+    return list(new_bom_df[get_added_idx(master_bom_df, new_bom_df, node_id=node_id)].reset_index()[node_id])
 
 
 def get_added_columns_idx(master_bom_df, new_bom_df):
@@ -93,4 +93,4 @@ def get_reordered_nodes(master_bom_df, new_bom_df, compare_columns=[None], delet
     reordered_idx = get_reordered_idx(master_bom_df, new_bom_df, compare_columns=[None],
                 deleted_idx=[None], added_idx=[None], node_id=node_id, order_id=order_id)
 
-    return master_bom_df[~deleted_idx][reordered_idx].reset_index()[node_id].to_list()
+    return list(master_bom_df[~deleted_idx][reordered_idx].reset_index()[node_id])

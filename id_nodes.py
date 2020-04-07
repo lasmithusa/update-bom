@@ -1,5 +1,6 @@
 import pandas as pd
 
+
 def id_immediate_parent(df_child_row, df):
     immediate_parent_level = -1
     immediate_parent_index = -1
@@ -17,10 +18,12 @@ def id_immediate_parent(df_child_row, df):
 
     return [df_child_row.name, immediate_parent_index, immediate_parent_level, immediate_parent_file_name]
 
+
 def generate_immediate_parent_id_df(df):
     immediate_parent_id_df = df.apply(func=id_immediate_parent, axis=1, result_type='expand', args=(df, ))
     immediate_parent_id_df.columns = ['Order', 'Immediate Parent Index', 'Immediate Parent Level', 'Immediate Parent File Name']
     return immediate_parent_id_df.set_index('Order')
+
 
 def crawl_immediate_parents(child_row, immediate_parent_id_df):
     if child_row['Immediate Parent Level'] == -1:
@@ -36,6 +39,7 @@ def crawl_immediate_parents(child_row, immediate_parent_id_df):
         
         return parent_indices, parent_levels, parent_file_names
 
+
 def generate_all_parent_id_df(df):
     immediate_parent_id_df = generate_immediate_parent_id_df(df)
     all_parent_id_df = immediate_parent_id_df.apply(crawl_immediate_parents, axis=1, result_type='expand', args=(immediate_parent_id_df, ))
@@ -43,11 +47,14 @@ def generate_all_parent_id_df(df):
     
     return all_parent_id_df
 
+
 def id_parents(df):
     return generate_all_parent_id_df(df)['Parent File Names'].str.join('->')
 
+
 def id_nodes(df):
     return id_parents(df).str.cat(df['File Name'].str.strip(), sep="->")
+
 
 if __name__ == '__main__':
     master_path = r"..\Master-0015442-FS-8100-BOM-20200326.xlsx"
