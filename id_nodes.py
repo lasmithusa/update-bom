@@ -47,7 +47,7 @@ def id_parents(df):
     return generate_all_parent_id_df(df)['Parent File Names'].str.join('->')
 
 def id_nodes(df):
-    return id_parents(df).str.cat(master_df['File Name'].str.strip(), sep="->")
+    return id_parents(df).str.cat(df['File Name'].str.strip(), sep="->")
 
 if __name__ == '__main__':
     master_path = r"..\Master-0015442-FS-8100-BOM-20200326.xlsx"
