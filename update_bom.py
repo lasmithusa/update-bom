@@ -26,10 +26,6 @@ new_bom_path = args.new
 updated_bom_name = args.outputname
 updated_bom_dir_path = args.outputpath
 
-# testing
-# master_bom_path = r"..\demo\0015442-FS-8100-BOM-20200326.xlsx"
-# new_bom_path = r"..\demo\0015442-FS-8100-BOM-20200328.xlsx"
-
 if updated_bom_name == None:
     updated_bom_name = 'updated_{}'.format(basename(new_bom_path))
 
