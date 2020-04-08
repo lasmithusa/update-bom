@@ -1,4 +1,4 @@
-import pandas as pd
+from pandas import read_excel
 
 
 def id_immediate_parent(df_child_row, df):
@@ -60,8 +60,8 @@ if __name__ == '__main__':
     master_path = r"..\Master-0015442-FS-8100-BOM-20200326.xlsx"
     compared_path = r"..\0015442-FS-8100-BOM-20200326.xlsx"
     
-    master_df = pd.read_excel(master_path)
-    compared_df = pd.read_excel(compared_path)
+    master_df = read_excel(master_path)
+    compared_df = read_excel(compared_path)
 
     master_df.index.set_names('Order', inplace=True)
     compared_df.index.set_names('Order', inplace=True)

@@ -1,10 +1,10 @@
-import pandas as pd
+from pandas import read_excel
 from id_changes import get_support_columns, get_deleted_idx
 from id_nodes import id_nodes
 
 
 def read_xlsx_bom(bom_path, order_id='Order'):
-    bom_df = pd.read_excel(bom_path)
+    bom_df = read_excel(bom_path)
     bom_df.index.set_names(order_id, inplace=True)
     return bom_df
 

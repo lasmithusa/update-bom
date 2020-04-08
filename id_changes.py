@@ -54,7 +54,7 @@ def get_updated_elements(master_bom_df, new_bom_df, compare_columns=[None], dele
 
     master_bom_df_subset = master_bom_df.loc[~deleted_idx, compare_columns].reset_index().set_index(node_id).drop(columns=drop).fillna('')
     new_bom_df_subset = new_bom_df.loc[~added_idx, compare_columns].reset_index().set_index(node_id).drop(columns=drop).fillna('')
-        
+
     return ~master_bom_df_subset.eq(new_bom_df_subset)
 
 
@@ -67,9 +67,6 @@ def get_updated_idx(master_bom_df, new_bom_df, compare_columns=[None], deleted_i
 
 def get_updated_nodes(master_bom_df, new_bom_df, compare_columns=[None], deleted_idx=[None],
                     added_idx=[None], node_id='Node ID', order_only=False, order_id='Order'):
-
-    if not any(deleted_idx):
-        deleted_idx = get_deleted_idx(master_bom_df, new_bom_df, node_id=node_id)
     
     updated_idx = get_updated_idx(master_bom_df, new_bom_df, compare_columns=compare_columns,
         deleted_idx=deleted_idx, added_idx=added_idx, node_id=node_id, order_only=order_only, order_id=order_id)
@@ -81,16 +78,13 @@ def get_reordered_idx(master_bom_df, new_bom_df, compare_columns=[None], deleted
                                     added_idx=[None], node_id='Node ID', order_id='Order'):
     
     return get_updated_elements(master_bom_df=master_bom_df, new_bom_df=new_bom_df, compare_columns=compare_columns,
-        deleted_idx=deleted_idx, added_idx=added_idx, node_id=node_id, order_only=True, order_id=order_id)[order_id].values
+        deleted_idx=deleted_idx, added_idx=added_idx, node_id=node_id, order_only=True, order_id=order_id)
 
 
 def get_reordered_nodes(master_bom_df, new_bom_df, compare_columns=[None], deleted_idx=[None],
                                         added_idx=[None], node_id='Node ID', order_id='Order'):
 
-    if not any(deleted_idx):
-        deleted_idx = get_deleted_idx(master_bom_df, new_bom_df, node_id=node_id)
-
     reordered_idx = get_reordered_idx(master_bom_df, new_bom_df, compare_columns=[None],
                 deleted_idx=[None], added_idx=[None], node_id=node_id, order_id=order_id)
 
-    return list(master_bom_df[~deleted_idx][reordered_idx].reset_index()[node_id])
+    return reordered_idx[reordered_idx.values].index.values

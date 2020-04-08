@@ -1,13 +1,41 @@
-import pandas as pd
-import numpy as np
+import argparse
+from pandas import ExcelWriter
 from bom_helper import read_xlsx_bom, add_node_ids, merge_support_columns
 from id_nodes import id_nodes
 from id_changes import get_deleted_nodes, get_added_nodes, get_reordered_nodes, get_updated_nodes, get_added_columns, get_updated_elements
 from format_xlsx import highlight_added_columns, highlight_changes, generate_key_sheet, get_max_column_widths, set_sheets_column_widths
+from os.path import basename, dirname, join
 
-master_bom_path = r"..\ShortMaster-0015442-FS-8100-BOM-20200326.xlsx"
-new_bom_path = r"..\ShortTest-0015442-FS-8100-BOM-20200326.xlsx"
-updated_bom_path = r"..\UpdatedBom-0015442-FS-8100-BOM-20200326.xlsx"
+# setup argument parser
+description = """BOM Management Tool for generating updated BOM sheets:
+                merges supporting columns from the master BOM to the new BOM;
+                indicates which BOM nodes were added, reordered, and deleted;
+                and indicates which BOM elements / properties were updated."""
+
+parser = argparse.ArgumentParser(description=description)
+parser.add_argument("--master", default="master.xlsx", type=str, help="Relative path to the master BOM workbook (default: \"master.xlsx\")")
+parser.add_argument("--new", default="new.xlsx", type=str, help="Relative path to the new BOM workbook (default: \"new.xlsx\")")
+parser.add_argument("--outputname", default=None, type=str, help="Name of the output updated BOM (default: \"updated_\" pre-pended to the new BOM workbook name)")
+parser.add_argument("--outputpath", default=None, type=str, help="Relative path to the output updated BOM (default: same as new BOM workbook path)")
+
+# parse passed arguments
+args = parser.parse_args()
+
+master_bom_path = args.master
+new_bom_path = args.new
+updated_bom_name = args.outputname
+updated_bom_dir_path = args.outputpath
+
+master_bom_path = r"..\demo\0015442-FS-8100-BOM-20200326.xlsx"
+new_bom_path = r"..\demo\0015442-FS-8100-BOM-20200328.xlsx"
+
+if updated_bom_name == None:
+    updated_bom_name = 'updated_{}'.format(basename(new_bom_path))
+
+if updated_bom_dir_path == None:
+    updated_bom_dir_path = dirname(new_bom_path)
+
+updated_bom_path = join(updated_bom_dir_path, updated_bom_name)
 
 # import BOMs
 master_bom_df = read_xlsx_bom(master_bom_path)
@@ -33,7 +61,7 @@ updated_elements = get_updated_elements(master_bom_df, new_bom_df, order_only=No
 updated_bom_df = merge_support_columns(master_bom_df, new_bom_df)
 
 # create XLSX writer object
-writer = pd.ExcelWriter(updated_bom_path, engine ='xlsxwriter')
+writer = ExcelWriter(updated_bom_path, engine ='xlsxwriter')
 
 # write DFs to sheet
 updated_bom_df.to_excel(writer, sheet_name ='Updated BOM', index=False)
