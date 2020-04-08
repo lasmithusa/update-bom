@@ -21,6 +21,13 @@ def highlight_changes(updated_bom_df, updated_bom_sheet, added_nodes, reordered_
                 updated_bom_sheet.write(node_position + 1, updated_bom_df.columns.get_loc(updated_column), updated_bom_df.loc[(slice(None), node_name), updated_column][0], updated_element_format)
 
 
+def highlight_updated_elements(updated_nodes_df, updated_nodes_sheet, updated_nodes, updated_elements, updated_element_format):
+    for node_position, node_name in enumerate(updated_nodes_df.index.get_level_values('Node ID')):
+        if node_name in updated_nodes:
+            for updated_column in updated_elements.loc[node_name, updated_elements.loc[node_name]].index.values:
+                updated_nodes_sheet.write(node_position + 1, updated_nodes_df.columns.get_loc(updated_column), updated_nodes_df.loc[(slice(None), node_name), updated_column][0], updated_element_format)
+
+
 def generate_key_sheet(xlsx_workbook, added_node_format, reordered_node_format, updated_element_format,
                     added_node_text = 'Added nodes or columns', reordered_node_text = 'Re-ordered nodes',
                     updated_element_text = 'Updated nodes', key_sheet_name='Color Key', key_width=24):
