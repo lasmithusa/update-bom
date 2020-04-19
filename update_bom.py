@@ -26,6 +26,9 @@ new_bom_path = args.new
 updated_bom_name = args.outputname
 updated_bom_dir_path = args.outputpath
 
+master_bom_path = r"C:\Users\Luke Smith\Desktop\Coca-Cola\BOM Mgmt\Deploy BOM Mgmt\demo\live\master_0015442-FS-8100-BOM-20200326.xlsx"
+new_bom_path = r"C:\Users\Luke Smith\Desktop\Coca-Cola\BOM Mgmt\Deploy BOM Mgmt\demo\live\0015442-FS-8100-BOM-20200417.xlsx"
+
 if updated_bom_name == None:
     updated_bom_name = 'updated_{}'.format(basename(new_bom_path))
 
@@ -64,7 +67,10 @@ writer = ExcelWriter(updated_bom_path, engine ='xlsxwriter')
 updated_bom_df.to_excel(writer, sheet_name ='Updated BOM', index=False)
 master_bom_df.loc[(slice(None), deleted_nodes), :].to_excel(writer, sheet_name ='Removed Nodes', index=False)
 new_bom_df.loc[(slice(None), added_nodes), :].to_excel(writer, sheet_name ='Added Nodes', index=False)
-master_bom_df.loc[(slice(None), updated_nodes), :].to_excel(writer, sheet_name ='Updated Nodes', index=False)
+# write old values to updated sheet
+master_bom_df.loc[(slice(None), updated_nodes), :].to_excel(writer, sheet_name ='Updated Nodes (Old Values)', index=False)
+# write new values to updated sheet
+updated_bom_df.loc[(slice(None), updated_nodes), :].to_excel(writer, sheet_name ='Updated Nodes (New Values)', index=False)
 master_bom_df.loc[(slice(None), reordered_nodes), :].to_excel(writer, sheet_name ='Reordered Nodes', index=False)
 
 # create workbook object for XLSX formatting control
@@ -76,9 +82,10 @@ added_node_format = workbook.add_format({'bg_color': '#00B0F0'})
 reordered_node_format = workbook.add_format({'bg_color': '#92D050'})
 updated_element_format = workbook.add_format({'bg_color': '#FFFF00'})
 
-# grab worksheet to for format editing
+# grab worksheet for format editing
 updated_bom_sheet = workbook.get_worksheet_by_name('Updated BOM')
-updated_nodes_sheet = workbook.get_worksheet_by_name('Updated Nodes')
+updated_nodes_old_sheet = workbook.get_worksheet_by_name('Updated Nodes (Old Values)')
+updated_nodes_new_sheet = workbook.get_worksheet_by_name('Updated Nodes (New Values)')
 
 # highlight added columns
 highlight_added_columns(updated_bom_df, updated_bom_sheet, added_columns, added_column_header_format)
@@ -87,7 +94,10 @@ highlight_added_columns(updated_bom_df, updated_bom_sheet, added_columns, added_
 highlight_changes(updated_bom_df, updated_bom_sheet, added_nodes, reordered_nodes, updated_nodes,
                 updated_elements, added_node_format, reordered_node_format, updated_element_format)
 
-highlight_updated_elements(master_bom_df.loc[(slice(None), updated_nodes), :], updated_nodes_sheet, updated_nodes, updated_elements, updated_element_format)
+# highlight old values on "Updated Nodes (Old Values)" sheet
+highlight_updated_elements(master_bom_df.loc[(slice(None), updated_nodes), :], updated_nodes_old_sheet, updated_nodes, updated_elements, updated_element_format)
+# highlight new values on "Updated Nodes (New Values)" sheet
+highlight_updated_elements(updated_bom_df.loc[(slice(None), updated_nodes), :], updated_nodes_new_sheet, updated_nodes, updated_elements, updated_element_format)
 
 # get max columns widths and set sheet column widths
 updated_added_max_column_widths = get_max_column_widths(updated_bom_df, buffer=2)

@@ -9,23 +9,23 @@ def highlight_changes(updated_bom_df, updated_bom_sheet, added_nodes, reordered_
     
     for node_position, node_name in enumerate(updated_bom_df.index.get_level_values('Node ID')):
         if node_name in added_nodes:
-            updated_bom_sheet.write(node_position + 1, updated_bom_df.columns.get_loc('Level'), updated_bom_df.loc[(slice(None), node_name), 'Level'][0], added_node_format)
-            updated_bom_sheet.write_string(node_position + 1, updated_bom_df.columns.get_loc('File Name'), updated_bom_df.loc[(slice(None), node_name), 'File Name'][0], added_node_format)
+            updated_bom_sheet.write(node_position + 1, updated_bom_df.columns.get_loc('Level'), updated_bom_df.loc[(slice(None), node_name), 'Level'].values[0], added_node_format)
+            updated_bom_sheet.write_string(node_position + 1, updated_bom_df.columns.get_loc('File Name'), updated_bom_df.loc[(slice(None), node_name), 'File Name'].values[0], added_node_format)
 
         if node_name in reordered_nodes:
-            updated_bom_sheet.write(node_position + 1, updated_bom_df.columns.get_loc('Level'), updated_bom_df.loc[(slice(None), node_name), 'Level'][0], reordered_node_format)
-            updated_bom_sheet.write_string(node_position + 1, updated_bom_df.columns.get_loc('File Name'), updated_bom_df.loc[(slice(None), node_name), 'File Name'][0], reordered_node_format)
+            updated_bom_sheet.write(node_position + 1, updated_bom_df.columns.get_loc('Level'), updated_bom_df.loc[(slice(None), node_name), 'Level'].values[0], reordered_node_format)
+            updated_bom_sheet.write_string(node_position + 1, updated_bom_df.columns.get_loc('File Name'), updated_bom_df.loc[(slice(None), node_name), 'File Name'].values[0], reordered_node_format)
 
         if node_name in updated_nodes:
             for updated_column in updated_elements.loc[node_name, updated_elements.loc[node_name]].index.values:
-                updated_bom_sheet.write(node_position + 1, updated_bom_df.columns.get_loc(updated_column), updated_bom_df.loc[(slice(None), node_name), updated_column][0], updated_element_format)
+                updated_bom_sheet.write(node_position + 1, updated_bom_df.columns.get_loc(updated_column), updated_bom_df.loc[(slice(None), node_name), updated_column].values[0], updated_element_format)
 
 
 def highlight_updated_elements(updated_nodes_df, updated_nodes_sheet, updated_nodes, updated_elements, updated_element_format):
     for node_position, node_name in enumerate(updated_nodes_df.index.get_level_values('Node ID')):
         if node_name in updated_nodes:
             for updated_column in updated_elements.loc[node_name, updated_elements.loc[node_name]].index.values:
-                updated_nodes_sheet.write(node_position + 1, updated_nodes_df.columns.get_loc(updated_column), updated_nodes_df.loc[(slice(None), node_name), updated_column][0], updated_element_format)
+                updated_nodes_sheet.write(node_position + 1, updated_nodes_df.columns.get_loc(updated_column), updated_nodes_df.loc[(slice(None), node_name), updated_column].values[0], updated_element_format)
 
 
 def generate_key_sheet(xlsx_workbook, added_node_format, reordered_node_format, updated_element_format,
