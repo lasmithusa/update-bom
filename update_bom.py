@@ -26,9 +26,6 @@ new_bom_path = args.new
 updated_bom_name = args.outputname
 updated_bom_dir_path = args.outputpath
 
-master_bom_path = r"C:\Users\Luke Smith\Desktop\Coca-Cola\BOM Mgmt\Deploy BOM Mgmt\demo\live\master_0015442-FS-8100-BOM-20200326.xlsx"
-new_bom_path = r"C:\Users\Luke Smith\Desktop\Coca-Cola\BOM Mgmt\Deploy BOM Mgmt\demo\live\0015442-FS-8100-BOM-20200417.xlsx"
-
 if updated_bom_name == None:
     updated_bom_name = 'updated_{}'.format(basename(new_bom_path))
 
